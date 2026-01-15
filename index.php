@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Todo</title>
+    <script src="script.js" defer></script>
 </head>
 <body>
 
@@ -10,6 +11,6 @@
 <button id="add">Hozzáadás</button>
 
  <ul id="todo-list"></ul>
-<script src="script.js"></script>
+
 </body>
 </html>
