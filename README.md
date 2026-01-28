@@ -1,6 +1,5 @@
 # minimal
 
-
 Telepítés:
 
 - `git clone`
