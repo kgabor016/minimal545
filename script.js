@@ -1,12 +1,18 @@
-const btn = document.getElementById("add")
+const form = document.getElementById("todoform")
 const input = document.getElementById("title")
 const list = document.getElementById("todo-list")
 
 /* ÚJ: oldalbetöltéskor taskok betöltése */
 document.addEventListener("DOMContentLoaded", loadTodos)
 
-btn.addEventListener("click", async () => {
-  const title = input.value
+form.addEventListener("submit", async (e) => {
+  // DEBUG: csak a submit esemény jelzése
+  console.log("submit")
+
+  // megakadályozza az oldal újratöltését
+  e.preventDefault()
+
+  const title = input.value.trim()
   if (!title) return
 
   await fetch("db-insert.php", {
@@ -40,6 +46,41 @@ async function loadTodos() {
     iconSpan.textContent = icon
     iconSpan.style.cursor = "pointer"
 
+    /* Új: módosítás gomb*/
+    const text = document.createElement("span")
+    const button = document.createElement("button")
+    button.textContent = "modosítás"
+
+    let editing = false
+
+    button.addEventListener("click", async () => {
+      if (!editing) {
+        const input = document.createElement("input")
+        input.type = "text"
+        input.value = todo.title
+
+        li.replaceChild(input, text)
+        button.textContent = "mentés"
+        input.focus()
+        editing = true
+      } else {
+        const input = li.querySelector("input")
+        const newTitle = input.value
+
+        const response = await fetch("db-update.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: todo.id,
+            title: newTitle,
+          }),
+        })
+
+        loadTodos()
+      }
+    })
     iconSpan.addEventListener("click", async () => {
       await fetch("toggle.php", {
         method: "POST",
@@ -69,6 +110,8 @@ async function loadTodos() {
       })
     })
 
+    li.appendChild(text)
+    li.appendChild(button)
     li.appendChild(iconSpan)
     li.appendChild(titleSpan)
     li.appendChild(delBtn)
